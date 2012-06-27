@@ -5,7 +5,10 @@
 #
 ################################################################################
 class wget {
-	package { "wget": ensure => installed }
+  
+  if $::operatingsystem != 'Darwin' {
+    package { "wget": ensure => installed }
+  }
 }
 
 ################################################################################
@@ -16,25 +19,25 @@ class wget {
 #
 ################################################################################
 define wget::fetch($source,$destination,$timeout="0") {
-
-	# using "unless" with test instead of "creates" to re-attempt download
-	# on empty files.
-	# wget creates an empty file when a download fails, and then it wouldn't try
-	# again to download the file
-	if $http_proxy {
-		$environment = [ "HTTP_PROXY=$http_proxy", "http_proxy=$http_proxy" ]
-	}
-	else {
-		$environment = []
-	}
-	exec { "wget-$name":
-		command => "wget --output-document=$destination $source",
-		timeout => $timeout,
-		unless => "test -s $destination",
-		environment => $environment,
-		path => "/usr/bin:/usr/sbin:/bin",
-		require => Package[wget],
-	}
+  include wget
+  # using "unless" with test instead of "creates" to re-attempt download
+  # on empty files.
+  # wget creates an empty file when a download fails, and then it wouldn't try
+  # again to download the file
+  if $::http_proxy {
+    $environment = [ "HTTP_PROXY=$::http_proxy", "http_proxy=$::http_proxy" ]
+  }
+  else {
+    $environment = []
+  }
+  exec { "wget-$name":
+    command => "wget --output-document=$destination $source",
+    timeout => $timeout,
+    unless => "test -s $destination",
+    environment => $environment,
+    path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin",
+    require => Class[wget],
+  }
 }
 
 ################################################################################
@@ -46,24 +49,39 @@ define wget::fetch($source,$destination,$timeout="0") {
 #
 ################################################################################
 define wget::authfetch($source,$destination,$user,$password="",$timeout="0") {
-	if $http_proxy {
-		$environment = [ "HTTP_PROXY=$http_proxy", "http_proxy=$http_proxy", "WGETRC=/tmp/wgetrc-$name" ]
-	}
-	else {
-		$environment = [ "WGETRC=/tmp/wgetrc-$name" ]
-	}
-	file { "/tmp/wgetrc-$name":
-		owner => root,
-		mode => 600,
-		content => "password=$password",
-	} ->
-	exec { "wget-$name":
-		command => "wget --user=$user --output-document=$destination $source",
-		timeout => $timeout,
-		unless => "test -s $destination",
-		environment => $environment,
-		path => "/usr/bin:/usr/sbin:/bin",
-		require => Package[wget],
-	}
+  include wget
+  if $http_proxy {
+    $environment = [ "HTTP_PROXY=$http_proxy", "http_proxy=$http_proxy", "WGETRC=/tmp/wgetrc-$name" ]
+  }
+  else {
+    $environment = [ "WGETRC=/tmp/wgetrc-$name" ]
+  }
+  
+  case $::operatingsystem {
+    'Darwin': {
+      # This is to work around an issue with macports wget and out of date CA cert bundle.  This requires 
+      # installing the curl-ca-bundle package like so:
+      #
+      # sudo port install curl-ca-bundle      
+      $wgetrc_content = "http-passwd=$password\nCA_CERTIFICATE=/opt/local/share/curl/curl-ca-bundle.crt\n"
+     } 
+     default: {
+      $wgetrc_content = "http-passwd=$password"
+    }
+  }
+  
+  file { "/tmp/wgetrc-$name":
+    owner => root,
+    mode => 600,
+    content => $wgetrc_content,
+  } ->
+  exec { "wget-$name":
+    command => "wget --user=$user --output-document=$destination $source",
+    timeout => $timeout,
+    unless => "test -s $destination",
+    environment => $environment,
+    path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin",
+    require => Class[wget],
+  }
 }
 
