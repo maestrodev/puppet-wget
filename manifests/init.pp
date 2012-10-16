@@ -76,7 +76,7 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0") {
     content => $wgetrc_content,
   } ->
   exec { "wget-$name":
-    command => "wget --user=$user --output-document=$destination $source",
+    command => "wget --user=$user --password=$password --output-document=$destination $source",
     timeout => $timeout,
     unless => "test -s $destination",
     environment => $environment,
