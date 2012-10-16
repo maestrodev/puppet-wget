@@ -63,10 +63,10 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0") {
       # installing the curl-ca-bundle package like so:
       #
       # sudo port install curl-ca-bundle      
-      $wgetrc_content = "http-passwd=$password\nCA_CERTIFICATE=/opt/local/share/curl/curl-ca-bundle.crt\n"
+      $wgetrc_content = "http-passwd=$password\nftp-password=$password\nCA_CERTIFICATE=/opt/local/share/curl/curl-ca-bundle.crt\n"
      } 
      default: {
-      $wgetrc_content = "http-passwd=$password"
+      $wgetrc_content = "http-passwd=$password\nftp-password=$password"
     }
   }
   
@@ -76,7 +76,7 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0") {
     content => $wgetrc_content,
   } ->
   exec { "wget-$name":
-    command => "wget --user=$user --password=$password --output-document=$destination $source",
+    command => "wget --user=$user --output-document=$destination $source",
     timeout => $timeout,
     unless => "test -s $destination",
     environment => $environment,
