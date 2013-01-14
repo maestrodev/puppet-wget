@@ -14,4 +14,14 @@ describe 'wget' do
     it { should contain_package('wget') }
   end
 
+  context 'no version specified' do
+    it { should contain_package('wget').with_ensure('installed') }
+  end
+
+  context 'version is 1.2.3' do
+    let(:params) { {:version => '1.2.3'} }
+
+    it { should contain_package('wget').with_ensure('1.2.3') }
+  end
+
 end
