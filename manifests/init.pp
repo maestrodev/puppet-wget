@@ -18,7 +18,7 @@ class wget {
 # using $http_proxy if necessary.
 #
 ################################################################################
-define wget::fetch($source,$destination,$timeout="0") {
+define wget::fetch($source,$destination,$timeout="0",$verbose="0") {
   include wget
   # using "unless" with test instead of "creates" to re-attempt download
   # on empty files.
@@ -30,8 +30,15 @@ define wget::fetch($source,$destination,$timeout="0") {
   else {
     $environment = []
   }
+  if $verbose == "1" {
+    $nv = ""
+  }
+  else {
+    $nv = "--no-verbose"
+    notify {"Downloading $source to $destination. This may take some time":}
+  }
   exec { "wget-$name":
-    command => "wget --output-document=$destination $source",
+    command => "wget $nv --output-document=$destination $source",
     timeout => $timeout,
     unless => "test -s $destination",
     environment => $environment,
@@ -48,13 +55,20 @@ define wget::fetch($source,$destination,$timeout="0") {
 # password must be stored in the password variable within the .wgetrc file.
 #
 ################################################################################
-define wget::authfetch($source,$destination,$user,$password="",$timeout="0") {
+define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$verbose="0") {
   include wget
   if $http_proxy {
     $environment = [ "HTTP_PROXY=$http_proxy", "http_proxy=$http_proxy", "WGETRC=/tmp/wgetrc-$name" ]
   }
   else {
     $environment = [ "WGETRC=/tmp/wgetrc-$name" ]
+  }
+  if $verbose == "1" {
+    $nv = ""
+  }
+  else {
+    $nv = "--no-verbose"
+    notify {"Downloading $source to $destination. This may take some time":}
   }
   
   case $::operatingsystem {
@@ -76,7 +90,7 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0") {
     content => $wgetrc_content,
   } ->
   exec { "wget-$name":
-    command => "wget --user=$user --output-document=$destination $source",
+    command => "wget $nv --user=$user --output-document=$destination $source",
     timeout => $timeout,
     unless => "test -s $destination",
     environment => $environment,
