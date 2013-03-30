@@ -18,7 +18,7 @@ class wget($version='installed') {
 # using $http_proxy if necessary.
 #
 ################################################################################
-define wget::fetch($source,$destination,$timeout="0",$verbose=false) {
+define wget::fetch($source,$destination,$timeout="0",$verbose=false,$redownload=false) {
   include wget
   # using "unless" with test instead of "creates" to re-attempt download
   # on empty files.
@@ -36,10 +36,15 @@ define wget::fetch($source,$destination,$timeout="0",$verbose=false) {
     false => "--no-verbose"
   }
 
+  $unless_test = $redownload ? {
+    true => "test",
+    false => "test -s $destination"
+  }
+  
   exec { "wget-$name":
     command => "wget $verbose_option --output-document=$destination $source",
     timeout => $timeout,
-    unless => "test -s $destination",
+    unless => $unless_test,
     environment => $environment,
     path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin",
     require => Class[wget],
@@ -54,7 +59,7 @@ define wget::fetch($source,$destination,$timeout="0",$verbose=false) {
 # password must be stored in the password variable within the .wgetrc file.
 #
 ################################################################################
-define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$verbose=false) {
+define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$verbose=false,$redownload=false) {
   include wget
   if $http_proxy {
     $environment = [ "HTTP_PROXY=$http_proxy", "http_proxy=$http_proxy", "WGETRC=/tmp/wgetrc-$name" ]
@@ -66,6 +71,11 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$ver
   $verbose_option = $verbose ? {
     true  => "--verbose",
     false => "--no-verbose"
+  }
+
+  $unless_test = $redownload ? {
+    true => "test",
+    false => "test -s $destination"
   }
   
   case $::operatingsystem {
@@ -89,7 +99,7 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$ver
   exec { "wget-$name":
     command => "wget $verbose_option --user=$user --output-document=$destination $source",
     timeout => $timeout,
-    unless => "test -s $destination",
+    unless => $unless_test,
     environment => $environment,
     path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin",
     require => Class[wget],
