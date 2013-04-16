@@ -18,7 +18,7 @@ class wget($version='installed') {
 # using $http_proxy if necessary.
 #
 ################################################################################
-define wget::fetch($source,$destination,$timeout="0",$verbose=false,$redownload=false) {
+define wget::fetch($source,$destination,$timeout="0",$verbose=false,$redownload=false,$nocheckcertificate=false) {
   include wget
   # using "unless" with test instead of "creates" to re-attempt download
   # on empty files.
@@ -41,8 +41,13 @@ define wget::fetch($source,$destination,$timeout="0",$verbose=false,$redownload=
     false => "test -s $destination"
   }
   
+  $nocheckcert_option = $nocheckcertificate ? {
+    true => ' --no-check-certificate',
+    false => ''
+  }
+  
   exec { "wget-$name":
-    command => "wget $verbose_option --output-document=$destination $source",
+    command => "wget $verbose_option$nocheckcert_option --output-document=$destination $source",
     timeout => $timeout,
     unless => $unless_test,
     environment => $environment,
@@ -59,7 +64,7 @@ define wget::fetch($source,$destination,$timeout="0",$verbose=false,$redownload=
 # password must be stored in the password variable within the .wgetrc file.
 #
 ################################################################################
-define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$verbose=false,$redownload=false) {
+define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$verbose=false,$redownload=false,$nocheckcertificate=false) {
   include wget
   if $http_proxy {
     $environment = [ "HTTP_PROXY=$http_proxy", "http_proxy=$http_proxy", "WGETRC=/tmp/wgetrc-$name" ]
@@ -76,6 +81,11 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$ver
   $unless_test = $redownload ? {
     true => "test",
     false => "test -s $destination"
+  }
+  
+  $nocheckcert_option = $nocheckcertificate ? {
+    true => ' --no-check-certificate',
+    false => ''
   }
   
   case $::operatingsystem {
@@ -97,7 +107,7 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$ver
     content => $wgetrc_content,
   } ->
   exec { "wget-$name":
-    command => "wget $verbose_option --user=$user --output-document=$destination $source",
+    command => "wget $verbose_option$nocheckcert_option --user=$user --output-document=$destination $source",
     timeout => $timeout,
     unless => $unless_test,
     environment => $environment,
