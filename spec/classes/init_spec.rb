@@ -25,7 +25,11 @@ describe 'wget' do
   end
 
   describe 'wget::fetch' do
-    it { should contain_exec('wget-test').with_command('wget --no-verbose --output-document=/tmp/dest http://localhost/source') }
+    it { should contain_exec('wget-test').with({
+      'command' => 'wget --no-verbose --output-document=/tmp/dest http://localhost/source',
+      'user' => 'testuser'
+      })
+    }
   end
 
   describe 'wget::authfetch' do

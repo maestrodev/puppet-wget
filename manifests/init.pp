@@ -5,7 +5,7 @@
 #
 ################################################################################
 class wget($version='installed') {
-  
+
   if $::operatingsystem != 'Darwin' {
     package { "wget": ensure => $version }
   }
@@ -18,7 +18,7 @@ class wget($version='installed') {
 # using $http_proxy if necessary.
 #
 ################################################################################
-define wget::fetch($source,$destination,$timeout="0",$verbose=false,$redownload=false,$nocheckcertificate=false) {
+define wget::fetch($source,$destination,$timeout="0",$verbose=false,$redownload=false,$nocheckcertificate=false,$user='root') {
   include wget
   # using "unless" with test instead of "creates" to re-attempt download
   # on empty files.
@@ -40,17 +40,18 @@ define wget::fetch($source,$destination,$timeout="0",$verbose=false,$redownload=
     true => "test",
     false => "test -s $destination"
   }
-  
+
   $nocheckcert_option = $nocheckcertificate ? {
     true => ' --no-check-certificate',
     false => ''
   }
-  
+
   exec { "wget-$name":
     command => "wget $verbose_option$nocheckcert_option --output-document=$destination $source",
     timeout => $timeout,
     unless => $unless_test,
     environment => $environment,
+    user => $user,
     path => "/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin",
     require => Class[wget],
   }
@@ -82,25 +83,25 @@ define wget::authfetch($source,$destination,$user,$password="",$timeout="0",$ver
     true => "test",
     false => "test -s $destination"
   }
-  
+
   $nocheckcert_option = $nocheckcertificate ? {
     true => ' --no-check-certificate',
     false => ''
   }
-  
+
   case $::operatingsystem {
     'Darwin': {
-      # This is to work around an issue with macports wget and out of date CA cert bundle.  This requires 
+      # This is to work around an issue with macports wget and out of date CA cert bundle.  This requires
       # installing the curl-ca-bundle package like so:
       #
-      # sudo port install curl-ca-bundle      
+      # sudo port install curl-ca-bundle
       $wgetrc_content = "password=$password\nCA_CERTIFICATE=/opt/local/share/curl/curl-ca-bundle.crt\n"
-     } 
+     }
      default: {
       $wgetrc_content = "password=$password"
     }
   }
-  
+
   file { "/tmp/wgetrc-$name":
     owner => root,
     mode => 600,
