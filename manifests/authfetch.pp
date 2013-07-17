@@ -15,7 +15,7 @@ define wget::authfetch (
   $verbose            = false,
   $redownload         = false,
   $nocheckcertificate = false,
-  $execuser           = 'root',
+  $execuser           = 'root'
 ) {
 
   include wget
