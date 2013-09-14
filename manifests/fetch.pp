@@ -6,8 +6,8 @@
 #
 ################################################################################
 define wget::fetch (
-  $source,
   $destination,
+  $source             = $title,
   $timeout            = '0',
   $verbose            = false,
   $redownload         = false,

@@ -2,23 +2,41 @@ A Puppet module to download files with wget, supporting authentication.
 
 # Example
 
-	include wget
+install wget:
+
+```puppet
+	   include wget
+```
 	
-	wget::fetch { "download":
-	  source      => "http://www.google.com/index.html",
-	  destination => "/tmp/index.html",
-	  timeout     => 0,
-	  verbose     => false,
+```puppet
+	   wget::fetch { "download Google's index":
+       source      => 'http://www.google.com/index.html',
+       destination => '/tmp/index.html',
+       timeout     => 0,
+       verbose     => false,
 	}
-	
-	wget::authfetch { "download":
-	  source      => "http://www.google.com/index.html",
-	  destination => "/tmp/index.html",
-	  user        => "user",
-	  password    => "password",
-	  timeout     => 0,
-	  verbose     => false,
-	}
+```
+or alternatively: 
+
+```puppet
+     wget::fetch { 'http://www.google.com/index.html':
+       destination => '/tmp/index.html',
+       timeout     => 0,
+       verbose     => false,
+     }
+```
+This fetches a document which requires authentication:
+
+```puppet
+     wget::authfetch { 'Fetch secret PDF':
+        source      => 'https://confidential.example.com/secret.pdf',
+        destination => '/tmp/secret.pdf',
+        user        => 'user',
+        password    => 'p$ssw0rd',
+        timeout     => 0,
+        verbose     => false,
+     }
+```
 
 # License
 

@@ -7,9 +7,9 @@
 #
 ################################################################################
 define wget::authfetch (
-  $source,
   $destination,
   $user,
+  $source             = $title,
   $password           = '',
   $timeout            = '0',
   $verbose            = false,
