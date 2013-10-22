@@ -12,7 +12,7 @@ define wget::fetch (
   $verbose            = false,
   $redownload         = false,
   $nocheckcertificate = false,
-  $execuser           = 'root',
+  $execuser           = null,
 ) {
 
   include wget
@@ -42,13 +42,25 @@ define wget::fetch (
     false => ''
   }
 
-  exec { "wget-${name}":
-    command     => "wget ${verbose_option}${nocheckcert_option} --output-document='${destination}' '${source}'",
-    timeout     => $timeout,
-    unless      => $unless_test,
-    environment => $environment,
-    user        => $execuser,
-    path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin',
-    require     => Class['wget'],
+  # if user parameter is set, puppet must be running under the root account
+  if $execuser != null {
+    exec { "wget-${name}":
+      command     => "wget ${verbose_option}${nocheckcert_option} --output-document='${destination}' '${source}'",
+      timeout     => $timeout,
+      unless      => $unless_test,
+      environment => $environment,
+      user        => $execuser,
+      path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin',
+      require     => Class['wget'],
+    }
+  } else {
+    exec { "wget-${name}-current-user":
+      command     => "wget ${verbose_option}${nocheckcert_option} --output-document='${destination}' '${source}'",
+      timeout     => $timeout,
+      unless      => $unless_test,
+      environment => $environment,
+      path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin',
+      require     => Class['wget'],
+    }
   }
 }
