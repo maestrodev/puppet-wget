@@ -12,7 +12,7 @@ define wget::fetch (
   $verbose            = false,
   $redownload         = false,
   $nocheckcertificate = false,
-  $execuser           = 'root',
+  $execuser           = undef,
 ) {
 
   include wget
