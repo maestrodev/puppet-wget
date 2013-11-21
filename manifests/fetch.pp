@@ -22,7 +22,11 @@ define wget::fetch (
   # wget creates an empty file when a download fails, and then it wouldn't try
   # again to download the file
   if $::http_proxy {
-    $environment = [ "HTTP_PROXY=${::http_proxy}", "http_proxy=${::http_proxy}" ]
+    if $::https_proxy {
+      $environment = [ "HTTP_PROXY=${::http_proxy}", "http_proxy=${::http_proxy}", "HTTPS_PROXY=${::https_proxy}", "https_proxy=${::https_proxy}" ]
+    else {
+      $environment = [ "HTTP_PROXY=${::http_proxy}", "http_proxy=${::http_proxy}", "HTTPS_PROXY=${::http_proxy}", "https_proxy=${::http_proxy}" ]
+    }
   } else {
     $environment = []
   }
