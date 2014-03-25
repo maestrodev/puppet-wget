@@ -15,6 +15,8 @@ define wget::fetch (
   $execuser           = undef,
   $user               = undef,
   $password           = undef,
+  $cache_dir          = undef,
+  $cache_file         = undef,
 ) {
 
   include wget
@@ -73,13 +75,31 @@ define wget::fetch (
     }
   }
 
+  $output_option = $cache_dir ? {
+    undef   => " --output-document='${destination}'",
+    default => " -N -P '${cache_dir}'",
+  }
+
   exec { "wget-${name}":
-    command     => "wget ${verbose_option}${nocheckcert_option}${user_option} --output-document='${destination}' '${source}'",
+    command     => "wget ${verbose_option}${nocheckcert_option}${user_option}${output_option} '${source}'",
     timeout     => $timeout,
     unless      => $unless_test,
     environment => $environment,
     user        => $execuser,
     path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin',
     require     => Class['wget'],
+  }
+
+  if $cache_dir != undef {
+    $cache = $cache_file ? {
+      undef   => inline_template("<%= File.basename(@title) %>"),
+      default => $cache_file,
+    }
+    file { $destination:
+      ensure  => file,
+      source  => "${cache_dir}/${cache}",
+      owner   => $execuser,
+      require => Exec["wget-${name}"],
+    }
   }
 }
