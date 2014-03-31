@@ -71,4 +71,41 @@ describe 'wget::fetch' do
     end
   end
 
+  context "with cache" do
+    let(:params) { super().merge({
+      :cache_dir => '/tmp/cache',
+      :execuser  => 'testuser',
+    })}
+
+    it { should contain_exec('wget-test').with({
+      'command' => "wget --no-verbose -N -P '/tmp/cache' 'http://localhost/source'",
+      'environment' => []
+    }) }
+
+    it { should contain_file("#{destination}").with({
+      'ensure'  => "file",
+      'source'  => "/tmp/cache/source",
+      'owner'   => "testuser",
+    }) }
+  end
+
+  context "with cache file" do
+    let(:params) { super().merge({
+      :cache_dir  => '/tmp/cache',
+      :cache_file => 'newsource',
+      :execuser   => 'testuser',
+    })}
+
+    it { should contain_exec('wget-test').with({
+      'command' => "wget --no-verbose -N -P '/tmp/cache' 'http://localhost/source'",
+      'environment' => []
+    }) }
+
+    it { should contain_file("#{destination}").with({
+      'ensure'  => "file",
+      'source'  => "/tmp/cache/newsource",
+      'owner'   => "testuser",
+    }) }
+  end
+
 end
