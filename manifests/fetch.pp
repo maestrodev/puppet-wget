@@ -15,7 +15,7 @@ define wget::fetch (
   $execuser           = undef,
   $user               = undef,
   $password           = undef,
-  $cache_dir          = undef,
+  $cache_dir          = $wget::cache_dir,
   $cache_file         = undef,
 ) {
 

@@ -61,6 +61,21 @@ this case you must inform the correct filename in the cache like this:
      }
 ```
 
+You may enable a single cache directory for all wget::fetch resources by
+specifying a default cache_dir using a resource-like declaration for the
+wget class like this:
+
+```puppet
+     class { 'wget': cache_dir => '/var/cache/wget' }
+```
+
+Or, better yet, you may use hiera to define the wget::cache_dir key and
+declare wget using import-like class declarations.
+
+```puppet
+     import wget
+```
+
 # Testing
 
 `rake` will run the rspec-puppet specs
