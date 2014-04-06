@@ -75,9 +75,19 @@ define wget::fetch (
     }
   }
 
-  $output_option = $cache_dir ? {
+  # Use $cache_dir if defined. Otherwise, use $wget::cache_dir, if
+  # defined. Otherwise the cache is really undefined.
+  $cached = $cache_dir ? {
+    undef   => $wget::cache_dir ? {
+      undef   => undef,
+      default => $wget::cache_dir,
+    },
+    default => $cache_dir,
+  }
+
+  $output_option = $cached ? {
     undef   => " --output-document='${destination}'",
-    default => " -N -P '${cache_dir}'",
+    default => " -N -P '${cached}'",
   }
 
   exec { "wget-${name}":
@@ -85,19 +95,19 @@ define wget::fetch (
     timeout     => $timeout,
     unless      => $unless_test,
     environment => $environment,
-    user        => $cache_dir ? { undef => $execuser, default => undef },
+    user        => $cached ? { undef => $execuser, default => undef },
     path        => '/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin',
     require     => Class['wget'],
   }
 
-  if $cache_dir != undef {
-    $cache = $cache_file ? {
+  if $cached != undef {
+    $cachef = $cache_file ? {
       undef   => inline_template("<%= require 'uri'; File.basename(URI::parse(@source).path) %>"),
       default => $cache_file,
     }
     file { $destination:
       ensure  => file,
-      source  => "${cache_dir}/${cache}",
+      source  => "${cached}/${cachef}",
       owner   => $execuser,
       require => Exec["wget-${name}"],
     }

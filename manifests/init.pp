@@ -5,7 +5,8 @@
 #
 ################################################################################
 class wget (
-  $version = present,
+  $version   = present,
+  $cache_dir = undef,
 ) {
 
   if $::operatingsystem != 'Darwin' {
