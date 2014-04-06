@@ -108,4 +108,18 @@ describe 'wget::fetch' do
     }) }
   end
 
+  context "with global cache" do
+    let(:pre_condition) { "class { 'wget': cache_dir => '/tmp/cache' }" }
+
+    it { should contain_exec('wget-test').with({
+      'command' => "wget --no-verbose -N -P '/tmp/cache' 'http://localhost/source'",
+      'environment' => []
+    }) }
+
+    it { should contain_file("#{destination}").with({
+      'ensure'  => "file",
+      'source'  => "/tmp/cache/source",
+    }) }
+  end
+
 end
