@@ -19,6 +19,7 @@ define wget::fetch (
   $headers            = undef,
   $cache_dir          = undef,
   $cache_file         = undef,
+  $flags              = undef,
 ) {
 
   include wget
@@ -98,8 +99,13 @@ define wget::fetch (
     default => $headers_all,
   }
 
+  $flags_joined = $flags ? {
+    undef => '',
+    default => inline_template(' <%= @flags.join(" ") %>')
+  }
+
   exec { "wget-${name}":
-    command     => "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option} '${source}'",
+    command     => "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} '${source}'",
     timeout     => $timeout,
     unless      => $unless_test,
     environment => $environment,

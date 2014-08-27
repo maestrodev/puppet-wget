@@ -130,4 +130,15 @@ describe 'wget::fetch' do
     }) }
   end
 
+  context "with flags", :compile do
+    let(:params) { super().merge({
+      :flags => ['--flag1', '--flag2'],
+    })}
+
+    it { should contain_exec('wget-test').with({
+      'command' => "wget --no-verbose --output-document='#{destination}' --flag1 --flag2 'http://localhost/source'",
+      'environment' => []
+    }) }
+  end
+
 end
