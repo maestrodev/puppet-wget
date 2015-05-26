@@ -32,13 +32,13 @@ define wget::fetch (
 
   include wget
 
-  $http_proxy_env = $::http_proxy ? {
-    undef   => [],
-    default => [ "HTTP_PROXY=${::http_proxy}", "http_proxy=${::http_proxy}" ],
+  $http_proxy_env = defined('$http_proxy') ? {
+    false   => [],
+    true    => [ "HTTP_PROXY=${::http_proxy}", "http_proxy=${::http_proxy}" ],
   }
-  $https_proxy_env = $::https_proxy ? {
-    undef   => [],
-    default => [ "HTTPS_PROXY=${::https_proxy}", "https_proxy=${::https_proxy}" ],
+  $https_proxy_env = defined('$https_proxy') ? {
+    false   => [],
+    true    => [ "HTTPS_PROXY=${::https_proxy}", "https_proxy=${::https_proxy}" ],
   }
   $password_env = $user ? {
     undef   => [],
