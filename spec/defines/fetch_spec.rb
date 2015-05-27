@@ -78,7 +78,7 @@ describe 'wget::fetch' do
     })}
 
     it { should contain_exec('wget-test').with({
-      'command' => "wget --no-verbose -N -P '/tmp/cache' 'http://localhost/source'",
+      'command' => "wget --no-verbose -P '/tmp/cache' 'http://localhost/source'",
       'environment' => []
     }) }
 
@@ -97,7 +97,7 @@ describe 'wget::fetch' do
     })}
 
     it { should contain_exec('wget-test').with({
-      'command' => "wget --no-verbose -N -P '/tmp/cache' 'http://localhost/source'",
+      'command' => "wget --no-verbose -P '/tmp/cache' 'http://localhost/source'",
       'environment' => []
     }) }
 

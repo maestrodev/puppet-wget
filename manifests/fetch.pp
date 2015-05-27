@@ -95,7 +95,7 @@ define wget::fetch (
 
   $output_option = $cache_dir ? {
     undef   => " --output-document='${destination}'",
-    default => " -N -P '${cache_dir}'",
+    default => " -P '${cache_dir}'",
   }
 
   # again, not using stdlib.concat, concatanate array of headers into a single string
