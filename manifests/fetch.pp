@@ -108,7 +108,7 @@ define wget::fetch (
   }
 
   $flags_joined = $flags ? {
-    undef => '',
+    undef   => '',
     default => inline_template(' <%= @flags.join(" ") %>')
   }
 
@@ -139,8 +139,8 @@ define wget::fetch (
 
   if $cache_dir != undef {
     $cache = $cache_file ? {
-      undef   => inline_template('<%= require \'uri\'; File.basename(URI::parse(@source).path) %>'),
-      default => $cache_file,
+      undef    => inline_template('<%= require \'uri\'; File.basename(URI::parse(@source).path) %>'),
+      default  => $cache_file,
     }
     file { $destination:
       ensure   => file,
