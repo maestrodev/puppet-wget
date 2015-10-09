@@ -32,13 +32,13 @@ define wget::fetch (
 
   include wget
 
-  $http_proxy_env = $::http_proxy ? {
-    undef   => [],
-    default => [ "HTTP_PROXY=${::http_proxy}", "http_proxy=${::http_proxy}" ],
+  $http_proxy_env = defined('$http_proxy') ? {
+    false   => [],
+    true    => [ "HTTP_PROXY=${::http_proxy}", "http_proxy=${::http_proxy}" ],
   }
-  $https_proxy_env = $::https_proxy ? {
-    undef   => [],
-    default => [ "HTTPS_PROXY=${::https_proxy}", "https_proxy=${::https_proxy}" ],
+  $https_proxy_env = defined('$https_proxy') ? {
+    false   => [],
+    true    => [ "HTTPS_PROXY=${::https_proxy}", "https_proxy=${::https_proxy}" ],
   }
   $password_env = $user ? {
     undef   => [],
@@ -96,7 +96,6 @@ define wget::fetch (
       mode     => '0600',
       content  => $wgetrc_content,
       before   => Exec["wget-${name}"],
-      schedule => $schedule,
     }
   }
 
@@ -116,7 +115,7 @@ define wget::fetch (
   }
 
   $flags_joined = $flags ? {
-    undef => '',
+    undef   => '',
     default => inline_template(' <%= @flags.join(" ") %>')
   }
 
@@ -143,13 +142,12 @@ define wget::fetch (
     user        => $exec_user,
     path        => $exec_path,
     require     => Class['wget'],
-    schedule    => $schedule,
   }
 
   if $cache_dir != undef {
     $cache = $cache_file ? {
-      undef   => inline_template('<%= require \'uri\'; File.basename(URI::parse(@source).path) %>'),
-      default => $cache_file,
+      undef    => inline_template('<%= require \'uri\'; File.basename(URI::parse(@source).path) %>'),
+      default  => $cache_file,
     }
     file { $destination:
       ensure   => file,
@@ -158,7 +156,6 @@ define wget::fetch (
       mode     => $mode,
       require  => Exec["wget-${name}"],
       backup   => $backup,
-      schedule => $schedule,
     }
   }
 
@@ -170,7 +167,6 @@ define wget::fetch (
       # only remove destination if md5sum does not match $source_hash
       unless   => "echo '${source_hash}  ${destination}' | md5sum -c --quiet",
       notify   => Exec["wget-${name}"],
-      schedule => $schedule,
     }
   }
 }
