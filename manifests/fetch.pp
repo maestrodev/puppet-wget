@@ -28,6 +28,7 @@ define wget::fetch (
   $flags              = undef,
   $backup             = true,
   $mode               = undef,
+  $unless             = undef,
 ) {
 
   include wget
@@ -59,7 +60,10 @@ define wget::fetch (
     $unless_test = "cmd.exe /c \"dir ${destination}\""
   } else {
     $exec_path = '/usr/bin:/usr/sbin:/bin:/usr/local/bin:/opt/local/bin:/usr/sfw/bin'
-    if $redownload == true or $cache_dir != undef  {
+    if $unless != undef {
+      $unless_test = $unless
+    }
+    elsif $redownload == true or $cache_dir != undef  {
       $unless_test = 'test'
     } else {
       $unless_test = "test -s '${destination}'"
