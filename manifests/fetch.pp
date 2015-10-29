@@ -28,6 +28,7 @@ define wget::fetch (
   $flags              = undef,
   $backup             = true,
   $mode               = undef,
+  $schedule           = undef,
 ) {
 
   include wget
@@ -46,11 +47,11 @@ define wget::fetch (
     }
   }
 
-  $http_proxy_env = $::http_proxy ? {
+  $http_proxy_env = $::facts['http_proxy'] ? {
     undef   => [],
     default => [ "HTTP_PROXY=${::http_proxy}", "http_proxy=${::http_proxy}" ],
   }
-  $https_proxy_env = $::https_proxy ? {
+  $https_proxy_env = $::facts['https_proxy'] ? {
     undef   => [],
     default => [ "HTTPS_PROXY=${::https_proxy}", "https_proxy=${::https_proxy}" ],
   }
