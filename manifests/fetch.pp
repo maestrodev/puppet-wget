@@ -29,6 +29,7 @@ define wget::fetch (
   $backup             = true,
   $mode               = undef,
   $unless             = undef,
+  $schedule           = undef,
 ) {
 
   include wget
