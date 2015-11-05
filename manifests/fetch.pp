@@ -158,7 +158,7 @@ define wget::fetch (
     environment => $environment,
     user        => $exec_user,
     path        => $exec_path,
-    require     => Class['wget'],
+    require     => Package['wget'],
     schedule    => $schedule,
   }
 
