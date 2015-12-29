@@ -14,6 +14,20 @@ install wget:
 ```puppet
     include wget
 ```
+Puppet 4 with strict_variables=true requires a little more setup:
+
+```puppet
+    Wget::Fetch { schedule => undef }
+```
+
+and in your site.pp file:
+
+```puppet
+    $http_proxy = hiera('http_proxy', undef)
+    $https_proxy = hiera('https_proxy', undef)
+```
+
+Then to fetch a public file:
 
 ```puppet
     wget::fetch { "download Google's index":
