@@ -10,7 +10,7 @@ define wget::authfetch (
   $destination,
   $user,
   $source             = $title,
-  $password           = '',
+  $password           = undef,
   $timeout            = '0',
   $verbose            = false,
   $redownload         = false,
@@ -34,5 +34,4 @@ define wget::authfetch (
     schedule           => $schedule,
     unless             => $unless,
   }
-
 }
