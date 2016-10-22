@@ -86,6 +86,8 @@ this case you must inform the correct filename in the cache like this:
       destination => '/tmp/tool-1.0.tgz',
       cache_dir   => '/var/cache/wget',
       cache_file  => 'tool-1.1.tgz',
+      execuser    => 'fileowner',
+      group       => 'filegroup',
     }
 ```
 

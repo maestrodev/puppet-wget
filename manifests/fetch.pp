@@ -27,6 +27,7 @@ define wget::fetch (
   $cache_file         = undef,
   $flags              = undef,
   $backup             = true,
+  $group              = undef,
   $mode               = undef,
   $unless             = undef,
 ) {
@@ -193,6 +194,7 @@ define wget::fetch (
       ensure   => file,
       source   => "${cache_dir}/${cache}",
       owner    => $execuser,
+      group    => $group,
       mode     => $mode,
       require  => Exec["wget-${name}"],
       backup   => $backup,
