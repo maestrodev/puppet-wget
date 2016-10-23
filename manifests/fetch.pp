@@ -20,6 +20,7 @@ define wget::fetch (
   $nocheckcertificate = false,
   $no_cookies         = false,
   $execuser           = undef,
+  $execgroup          = undef,
   $user               = undef,
   $password           = undef,
   $headers            = undef,
@@ -27,7 +28,6 @@ define wget::fetch (
   $cache_file         = undef,
   $flags              = undef,
   $backup             = true,
-  $group              = undef,
   $mode               = undef,
   $unless             = undef,
 ) {
@@ -130,6 +130,7 @@ define wget::fetch (
 
     file { "${_destination}.wgetrc":
       owner    => $execuser,
+      group    => $execgroup,
       mode     => '0600',
       content  => $wgetrc_content,
       before   => Exec["wget-${name}"],
@@ -162,6 +163,11 @@ define wget::fetch (
     default => undef,
   }
 
+  $exec_group = $cache_dir ? {
+    undef   => $execgroup,
+    default => undef,
+  }
+
   case $source_hash{
     '', undef: {
       $command = "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\""
@@ -171,15 +177,13 @@ define wget::fetch (
     }
   }
 
-
-
-
   exec { "wget-${name}":
     command     => $command,
     timeout     => $timeout,
     unless      => $unless_test,
     environment => $environment,
     user        => $exec_user,
+    group       => $exec_group,
     path        => $exec_path,
     require     => Package['wget'],
     schedule    => $schedule,
@@ -194,7 +198,7 @@ define wget::fetch (
       ensure   => file,
       source   => "${cache_dir}/${cache}",
       owner    => $execuser,
-      group    => $group,
+      group    => $execgroup,
       mode     => $mode,
       require  => Exec["wget-${name}"],
       backup   => $backup,

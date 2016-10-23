@@ -23,7 +23,7 @@ install wget:
       verbose     => false,
     }
 ```
-or alternatively: 
+or alternatively:
 
 ```puppet
     wget::fetch { 'http://www.google.com/index.html':
@@ -87,7 +87,7 @@ this case you must inform the correct filename in the cache like this:
       cache_dir   => '/var/cache/wget',
       cache_file  => 'tool-1.1.tgz',
       execuser    => 'fileowner',
-      group       => 'filegroup',
+      execgroup   => 'filegroup',
     }
 ```
 
