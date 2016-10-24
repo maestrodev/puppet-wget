@@ -39,6 +39,8 @@ coverage/
 .tmp/
 .librarian/
 
+# Ruby
+Gemfile.lock
 
 # Module-specific paths
 Puppetfile.lock

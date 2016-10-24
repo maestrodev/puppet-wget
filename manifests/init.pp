@@ -15,7 +15,7 @@ class wget (
         package { 'wget': ensure => $version }
       }
     }
-  
+
     if $::kernel == 'FreeBSD' {
       if ! defined(Package['ftp/wget']) {
         package { 'ftp/wget': ensure => $version }

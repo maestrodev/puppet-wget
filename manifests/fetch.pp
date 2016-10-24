@@ -32,7 +32,7 @@ define wget::fetch (
   $unless             = undef,
 ) {
 
-  include wget
+  include ::wget
 
   # The strict_variables setting aborts compilation referencing unset variables.
   $strict = defined('$::settings::strict_variables') and $::settings::strict_variables
@@ -171,9 +171,6 @@ define wget::fetch (
     }
   }
 
-
-
-
   exec { "wget-${name}":
     command     => $command,
     timeout     => $timeout,
@@ -190,9 +187,10 @@ define wget::fetch (
       undef   => inline_template('<%= require \'uri\'; File.basename(URI::parse(@source).path) %>'),
       default => $cache_file,
     }
+
     file { $_destination:
       ensure   => file,
-      source   => "${cache_dir}/${cache}",
+      source   => "${cache_dir}/${cache}", # lint:ignore:source_without_rights
       owner    => $execuser,
       group    => $group,
       mode     => $mode,

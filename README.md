@@ -12,7 +12,7 @@ A Puppet module to download files with wget, supporting authentication.
 install wget:
 
 ```puppet
-    include wget
+    include ::wget
 ```
 
 ```puppet
@@ -23,7 +23,7 @@ install wget:
       verbose     => false,
     }
 ```
-or alternatively: 
+or alternatively:
 
 ```puppet
     wget::fetch { 'http://www.google.com/index.html':
