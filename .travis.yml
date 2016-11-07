@@ -1,48 +1,77 @@
 ---
-# This file is managed centrally by modulesync
-#   https://github.com/maestrodev/puppet-modulesync
+language: ruby
+
+rvm:
+  - 2.0.0
+  - 2.1.0
+  - 2.3.1
+
+env:
+  matrix:
+    - PUPPET_GEM_VERSION="~> 3.1.0"
+    - PUPPET_GEM_VERSION="~> 3.2.0"
+    - PUPPET_GEM_VERSION="~> 3.3.0"
+    - PUPPET_GEM_VERSION="~> 3.4.0"
+    - PUPPET_GEM_VERSION="~> 3.5.0"
+    - PUPPET_GEM_VERSION="~> 3.6.0"
+    - PUPPET_GEM_VERSION="~> 3.7.0"
+    - PUPPET_GEM_VERSION="~> 3.8.0"
+    - PUPPET_GEM_VERSION="~> 3" FUTURE_PARSER="yes"
+    - PUPPET_GEM_VERSION="~> 4.0.0"
+    - PUPPET_GEM_VERSION="~> 4.1.0"
+    - PUPPET_GEM_VERSION="~> 4.2.0"
+    - PUPPET_GEM_VERSION="~> 4.3.0"
+    - PUPPET_GEM_VERSION="~> 4.4.0"
+    - PUPPET_GEM_VERSION="~> 4.5.0"
+    - PUPPET_GEM_VERSION="~> 4.6.0"
+    - PUPPET_GEM_VERSION="~> 4.7.0"
+    - PUPPET_GEM_VERSION="~> 4.8.0"
+    - PUPPET_GEM_VERSION="~> 4"
 
 sudo: false
 
+bundler_args: '--without acceptance maint'
+
 before_install:
-  - rm -f Gemfile.lock
+  - 'gem update --system'
+  - 'gem update bundler'
 
-rvm:
-  - "2.0"
-
-env:
-  - PUPPET_VERSION="~> 4.3.0"
-  - PUPPET_VERSION="~> 4.2.0"
-  - PUPPET_VERSION="~> 4.1.0"
-  - PUPPET_VERSION="~> 4.0.0"
-  - PUPPET_VERSION="~> 3.8.0"
-  - PUPPET_VERSION="~> 3.7.0"
-  - PUPPET_VERSION="~> 3.6.0"
-  - PUPPET_VERSION="~> 3.5.0"
-  - PUPPET_VERSION="~> 3.4.0"
+script: 'SPEC_OPTS="--format documentation" bundle exec rake validate lint spec'
 
 matrix:
+  fast_finish: true
   exclude:
-    # No support for Ruby 2.0 before Puppet 3.2
-    - rvm: '2.0'
-      env: PUPPET_VERSION="~> 2.7.0"
-    - rvm: '2.0'
-      env: PUPPET_VERSION="~> 3.0.0"
-    - rvm: '2.0'
-      env: PUPPET_VERSION="~> 3.1.0"
-    # Puppet < 3.5.0 is broken under ruby 2.1 https://tickets.puppetlabs.com/browse/PUP-1243
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 2.7.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.0.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.1.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.2.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.3.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.4.0"
+    - rvm: 2.0.0
+      env: PUPPET_GEM_VERSION="~> 3.1.0"
+    - rvm: 2.1.0
+      env: PUPPET_GEM_VERSION="~> 3.1.0"
+    - rvm: 2.1.0
+      env: PUPPET_GEM_VERSION="~> 3.2.0"
+    - rvm: 2.1.0
+      env: PUPPET_GEM_VERSION="~> 3.3.0"
+    - rvm: 2.1.0
+      env: PUPPET_GEM_VERSION="~> 3.4.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.1.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.2.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.3.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.4.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.5.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.6.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.7.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3.8.0"
+    - rvm: 2.3.1
+      env: PUPPET_GEM_VERSION="~> 3" FUTURE_PARSER="yes"
+
+notifications:
+  email: false
 
 deploy:
   provider: puppetforge

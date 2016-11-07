@@ -21,6 +21,7 @@ tags
 ## Bundler
 .bundle
 vendor/
+Gemfile.lock
 
 ## rbenv / rvm
 .rbenv*

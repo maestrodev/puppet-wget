@@ -32,7 +32,7 @@ define wget::fetch (
   $unless             = undef,
 ) {
 
-  include wget
+  include ::wget
 
   # The strict_variables setting aborts compilation referencing unset variables.
   $strict = defined('$::settings::strict_variables') and $::settings::strict_variables
@@ -170,9 +170,6 @@ define wget::fetch (
       $command = "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\" && echo '${source_hash}  ${_destination}' | md5sum -c --quiet"
     }
   }
-
-
-
 
   exec { "wget-${name}":
     command     => $command,
