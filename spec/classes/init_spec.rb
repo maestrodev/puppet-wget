@@ -34,9 +34,10 @@ describe 'wget' do
   context 'running on FreeBSD', :compile do
     let(:facts) { {
       :operatingsystem => 'FreeBSD',
-      :kernel => 'FreeBSD'
+      :kernel => 'FreeBSD',
+      :operatingsystemmajrelease => '10'
     } }
 
-    it { should contain_package('ftp/wget') }
+    it { should contain_package('wget') }
   end
 end
