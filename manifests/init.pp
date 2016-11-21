@@ -10,15 +10,21 @@ class wget (
 ) {
 
   if $manage_package {
-    if $::kernel == 'Linux' {
-      if ! defined(Package['wget']) {
+    if !defined(Package['wget']) {
+      if $::kernel == 'Linux' {
         package { 'wget': ensure => $version }
       }
-    }
-  
-    if $::kernel == 'FreeBSD' {
-      if ! defined(Package['ftp/wget']) {
-        package { 'ftp/wget': ensure => $version }
+      elsif $::kernel == 'FreeBSD' {
+        if versioncmp($::operatingsystemmajrelease, '10') >= 0 {
+          package { 'wget': ensure => $version }
+        }
+        else {
+          package { 'wget':
+            name   => 'ftp/wget',
+            ensure => $version,
+            alias  => 'wget';
+          }
+        }
       }
     }
   }
