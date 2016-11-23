@@ -200,6 +200,15 @@ define wget::fetch (
       backup   => $backup,
       schedule => $schedule,
     }
+  } else {
+    # set file attributes
+    file { $_destination:
+      ensure   => file,
+      owner    => $execuser,
+      group    => $group,
+      mode     => $mode,
+      require  => Exec["wget-${name}"],
+    }
   }
 
   # remove destination if source_hash is invalid
