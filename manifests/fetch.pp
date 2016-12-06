@@ -144,7 +144,15 @@ define wget::fetch (
 
   # again, not using stdlib.concat, concatanate array of headers into a single string
   if $headers != undef {
-    $headers_all = inline_template('<% @headers.each do | header | -%> --header "<%= header -%>"<% end -%>')
+    $array_headers = is_array($headers) ? {
+      false => $headers ? {
+        '' => [],
+        default => split($headers, ','),
+      },
+      default => $headers,
+    }
+
+    $headers_all = inline_template('<% @array_headers.each do | header | -%> --header "<%= header -%>"<% end -%>')
   }
 
   $header_option = $headers ? {
