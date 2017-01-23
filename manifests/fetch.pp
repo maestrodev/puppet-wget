@@ -130,6 +130,7 @@ define wget::fetch (
 
     file { "${_destination}.wgetrc":
       owner    => $execuser,
+      group    => $group,
       mode     => '0600',
       content  => $wgetrc_content,
       before   => Exec["wget-${name}"],
@@ -162,6 +163,11 @@ define wget::fetch (
     default => undef,
   }
 
+  $exec_group = $cache_dir ? {
+    undef   => $group,
+    default => undef,
+  }
+
   case $source_hash{
     '', undef: {
       $command = "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\""
@@ -171,15 +177,13 @@ define wget::fetch (
     }
   }
 
-
-
-
   exec { "wget-${name}":
     command     => $command,
     timeout     => $timeout,
     unless      => $unless_test,
     environment => $environment,
     user        => $exec_user,
+    group       => $exec_group,
     path        => $exec_path,
     require     => Package['wget'],
     schedule    => $schedule,
