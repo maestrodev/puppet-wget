@@ -20,7 +20,6 @@ define wget::fetch (
   $nocheckcertificate = false,
   $no_cookies         = false,
   $execuser           = undef,
-  $group              = undef,
   $user               = undef,
   $password           = undef,
   $headers            = undef,
@@ -28,6 +27,7 @@ define wget::fetch (
   $cache_file         = undef,
   $flags              = undef,
   $backup             = true,
+  $group              = undef,
   $mode               = undef,
   $unless             = undef,
 ) {
