@@ -20,7 +20,7 @@ define wget::fetch (
   $nocheckcertificate = false,
   $no_cookies         = false,
   $execuser           = undef,
-  $execgroup          = undef,
+  $group          = undef,
   $user               = undef,
   $password           = undef,
   $headers            = undef,
@@ -130,7 +130,7 @@ define wget::fetch (
 
     file { "${_destination}.wgetrc":
       owner    => $execuser,
-      group    => $execgroup,
+      group    => $group,
       mode     => '0600',
       content  => $wgetrc_content,
       before   => Exec["wget-${name}"],
@@ -164,7 +164,7 @@ define wget::fetch (
   }
 
   $exec_group = $cache_dir ? {
-    undef   => $execgroup,
+    undef   => $group,
     default => undef,
   }
 
@@ -198,7 +198,7 @@ define wget::fetch (
       ensure   => file,
       source   => "${cache_dir}/${cache}",
       owner    => $execuser,
-      group    => $execgroup,
+      group    => $group,
       mode     => $mode,
       require  => Exec["wget-${name}"],
       backup   => $backup,
