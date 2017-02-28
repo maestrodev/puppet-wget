@@ -30,6 +30,7 @@ define wget::fetch (
   $group              = undef,
   $mode               = undef,
   $unless             = undef,
+  $schedule           = undef,
 ) {
 
   include wget
