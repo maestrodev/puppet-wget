@@ -48,7 +48,7 @@ define wget::fetch (
     /^.*\/$/, /^.*\$/:  {
       $source_split    = split($source, '/')  # split the URL into arrays, using "/" as a delimiter
       $source_filename = $source_split[-1]    # take the very last value in the array. this is the filename
-      $_destination    = "${destination}/${source_filename}"
+      $_destination    = "${destination}${source_filename}"
     }
     default: {
       $_destination = $destination
