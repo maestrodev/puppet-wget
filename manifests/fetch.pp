@@ -23,6 +23,7 @@ define wget::fetch (
   $user               = undef,
   $password           = undef,
   $headers            = undef,
+  $user_agent         = undef,
   $cache_dir          = undef,
   $cache_file         = undef,
   $flags              = undef,
@@ -78,7 +79,6 @@ define wget::fetch (
     undef   => [],
     default => [ "WGETRC=${_destination}.wgetrc" ],
   }
-
   # not using stdlib.concat to avoid extra dependency
   $environment = split(inline_template('<%= (@http_proxy_env+@https_proxy_env+@password_env).join(\',\') %>'),',')
 
@@ -102,7 +102,10 @@ define wget::fetch (
       $unless_test = "test -s '${_destination}'"
     }
   }
-
+  $user_agent_option = $user_agent ? {
+    undef   => '',
+    default => " --user-agent='${user_agent}'",
+  }
   $nocheckcert_option = $nocheckcertificate ? {
     true  => ' --no-check-certificate',
     false => ''
@@ -164,10 +167,10 @@ define wget::fetch (
 
   case $source_hash{
     '', undef: {
-      $command = "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\""
+      $command = "wget ${verbose_option}${user_agent_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\""
     }
     default: {
-      $command = "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\" && echo '${source_hash}  ${_destination}' | md5sum -c --quiet"
+      $command = "wget ${verbose_option}${user_agent_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\" && echo '${source_hash}  ${_destination}' | md5sum -c --quiet"
     }
   }
 
