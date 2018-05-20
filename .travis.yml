@@ -1,57 +1,52 @@
 ---
-# This file is managed centrally by modulesync
-#   https://github.com/maestrodev/puppet-modulesync
-
 sudo: false
-
+dist: trusty
+language: ruby
+cache: bundler
+# related to https://github.com/rubygems/rubygems/issues/2123
 before_install:
-  - rm -f Gemfile.lock
-
-rvm:
-  - "2.0"
-
-env:
-  - PUPPET_VERSION="~> 4.3.0"
-  - PUPPET_VERSION="~> 4.2.0"
-  - PUPPET_VERSION="~> 4.1.0"
-  - PUPPET_VERSION="~> 4.0.0"
-  - PUPPET_VERSION="~> 3.8.0"
-  - PUPPET_VERSION="~> 3.7.0"
-  - PUPPET_VERSION="~> 3.6.0"
-  - PUPPET_VERSION="~> 3.5.0"
-  - PUPPET_VERSION="~> 3.4.0"
-
+  - 'rm -f Gemfile.lock'
+  - 'gem update --system'
+  - 'gem install bundler'
+script:
+  - 'bundle exec rake $CHECK'
 matrix:
-  exclude:
-    # No support for Ruby 2.0 before Puppet 3.2
-    - rvm: '2.0'
-      env: PUPPET_VERSION="~> 2.7.0"
-    - rvm: '2.0'
-      env: PUPPET_VERSION="~> 3.0.0"
-    - rvm: '2.0'
-      env: PUPPET_VERSION="~> 3.1.0"
-    # Puppet < 3.5.0 is broken under ruby 2.1 https://tickets.puppetlabs.com/browse/PUP-1243
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 2.7.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.0.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.1.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.2.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.3.0"
-    - rvm: '2.1'
-      env: PUPPET_VERSION="~> 3.4.0"
-
+  fast_finish: true
+  include:
+  - rvm: 2.1.9
+    bundler_args: --without system_tests development release
+    env: PUPPET_VERSION="~> 4.0" CHECK=test PARALLEL_TEST_PROCESSORS=12
+  - rvm: 2.4.4
+    bundler_args: --without system_tests development release
+    env: PUPPET_VERSION="~> 5.0" CHECK=test
+  - rvm: 2.5.1
+    bundler_args: --without system_tests development release
+    env: PUPPET_VERSION="~> 5.0" CHECK=test_with_coveralls
+  - rvm: 2.4.4
+    bundler_args: --without system_tests development release
+    env: PUPPET_VERSION="~> 5.0" CHECK=rubocop
+  - rvm: 2.5.1
+    bundler_args: --without system_tests development release
+    env: PUPPET_VERSION="~> 5.0" CHECK=build DEPLOY_TO_FORGE=yes
+branches:
+  only:
+  - master
+  - /^v\d/
+notifications:
+  email: false
+  irc:
+    on_success: always
+    on_failure: always
+    channels:
+      - "chat.freenode.org#voxpupuli-notifications"
 deploy:
   provider: puppetforge
-  user: maestrodev
+  user: puppet
   password:
-    secure: "Bhw0Fli+sIxM+yzjBt6iBEfbja1R7CGnmx2wujIFjtcYxU9TvNuo93ps8cte7ebSGWlJ9/QgKcNnGSgVaO7tkUqusIsWPYZRJ2LsEM9U0bDH9i0ns08l6NaOl0nTT3NPdp/wAhN5pYuMFcZg4r0v+ARzo+3x6NtFH1YYwJqmqR4="
+    secure: ""
   on:
     tags: true
     # all_branches is required to use tags
     all_branches: true
-    # Only publish if our main Ruby target builds
-    condition: "$PUPPET_VERSION = '~> 3.6.0'"
+    # Only publish the build marked with "DEPLOY_TO_FORGE"
+    condition: "$DEPLOY_TO_FORGE = yes"
