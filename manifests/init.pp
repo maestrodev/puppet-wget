@@ -20,8 +20,8 @@ class wget (
         }
         else {
           package { 'wget':
-            name   => 'ftp/wget',
             ensure => $version,
+            name   => 'ftp/wget',
             alias  => 'wget';
           }
         }
