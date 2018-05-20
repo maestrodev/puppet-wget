@@ -172,7 +172,10 @@ define wget::fetch (
   }
 
 
-
+  # ensure that wget is installed before the exec resource
+  # but only if we manage wget....
+  Class['wget']
+  -> Exec["wget-${name}"]
 
   exec { "wget-${name}":
     command     => $command,
@@ -181,7 +184,6 @@ define wget::fetch (
     environment => $environment,
     user        => $exec_user,
     path        => $exec_path,
-    require     => Package['wget'],
     schedule    => $schedule,
   }
 

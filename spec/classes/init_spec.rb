@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe 'wget' do
   on_supported_os.each do |os, facts|
+
+    next if ['windows', 'SunOS'].include? facts[:kernel]
+
     context "on #{os} " do
 
       let :facts do
@@ -22,23 +25,15 @@ describe 'wget' do
         it { should contain_package('wget').with_ensure('present') }
       end
 
-      context 'running on OS X', :compile do
-        let(:facts) { {
-          :operatingsystem => 'Darwin',
-          :kernel => 'Darwin'
-        } }
-
-        it { should_not contain_package('wget') }
-      end
-
-      context 'running on FreeBSD', :compile do
-        let(:facts) { {
-          :operatingsystem => 'FreeBSD',
-          :kernel => 'FreeBSD',
-          :operatingsystemmajrelease => '10'
-        } }
-
-        it { should contain_package('wget') }
+      case facts[:kernel]
+      when 'Darwin'
+        context 'running on OS X', :compile do
+          it { should_not contain_package('wget') }
+        end
+      when 'FreeBSD'
+        context 'running on FreeBSD', :compile do
+          it { should contain_package('wget') }
+        end
       end
     end
   end

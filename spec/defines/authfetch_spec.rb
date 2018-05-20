@@ -1,33 +1,42 @@
 require 'spec_helper'
 
 describe 'wget::authfetch' do
-  let(:title) { 'authtest' }
-  let(:params) {{
-    :source      => 'http://localhost/source',
-    :destination => destination,
-    :user        => 'myuser',
-    :password    => 'mypassword',
-  }}
 
-  let(:destination) { "/tmp/dest" }
+  on_supported_os.each do |os, facts|
+    context "on #{os} " do
 
-  context "with default params", :compile do
-    it { should contain_exec('wget-authtest').with({
-      'command'     => "wget --no-verbose --user=myuser --output-document=\"#{destination}\" \"http://localhost/source\"",
-      'environment' => ["WGETRC=#{destination}.wgetrc"]
-      })
-    }
-    it { should contain_file("#{destination}.wgetrc").with_content('password=mypassword') }
-  end
+      let :facts do
+        facts
+      end
+      let(:title) { 'authtest' }
+      let(:params) {{
+        :source      => 'http://localhost/source',
+        :destination => destination,
+        :user        => 'myuser',
+        :password    => 'mypassword',
+      }}
 
-  context "with user", :compile do
-    let(:params) { super().merge({
-      :execuser => 'testuser',
-    })}
+      let(:destination) { "/tmp/dest" }
 
-    it { should contain_exec('wget-authtest').with({
-      'command' => "wget --no-verbose --user=myuser --output-document=\"#{destination}\" \"http://localhost/source\"",
-      'user'    => 'testuser'
-    }) }
+      context "with default params", :compile do
+        it { should contain_exec('wget-authtest').with({
+          'command'     => "wget --no-verbose --user=myuser --output-document=\"#{destination}\" \"http://localhost/source\"",
+          'environment' => ["WGETRC=#{destination}.wgetrc"]
+          })
+        }
+        it { should contain_file("#{destination}.wgetrc").with_content('password=mypassword') }
+      end
+
+      context "with user", :compile do
+        let(:params) { super().merge({
+          :execuser => 'testuser',
+        })}
+
+        it { should contain_exec('wget-authtest').with({
+          'command' => "wget --no-verbose --user=myuser --output-document=\"#{destination}\" \"http://localhost/source\"",
+          'user'    => 'testuser'
+        }) }
+      end
+    end
   end
 end
