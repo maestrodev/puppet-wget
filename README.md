@@ -1,13 +1,20 @@
-[![Build Status](https://travis-ci.org/maestrodev/puppet-wget.svg?branch=master)](https://travis-ci.org/maestrodev/puppet-wget)
-[![Puppet Forge](https://img.shields.io/puppetforge/v/maestrodev/wget.svg)](https://forge.puppetlabs.com/maestrodev/wget)
-[![Puppet Forge](https://img.shields.io/puppetforge/f/maestrodev/wget.svg)](https://forge.puppetlabs.com/maestrodev/wget)
-[![Puppet Forge](https://img.shields.io/puppetforge/e/maestrodev/wget.svg)](https://forge.puppetlabs.com/maestrodev/wget)
-
-
+[![Build Status](https://travis-ci.org/voxpupuli/puppet-wget.svg?branch=master)](https://travis-ci.org/voxpupuli/puppet-wget)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/wget.svg)](https://forge.puppetlabs.com/puppet/wget)
+[![Puppet Forge](https://img.shields.io/puppetforge/f/puppet/wget.svg)](https://forge.puppetlabs.com/puppet/wget)
+[![Puppet Forge](https://img.shields.io/puppetforge/e/puppet/wget.svg)](https://forge.puppetlabs.com/puppet/wget)
 
 A Puppet module to download files with wget, supporting authentication.
+It got migrated from [maestrodev](https://forge.puppet.com/maestrodev/wget) to [Vox Pupuli](https://voxpupuli.org/)
 
-# Example
+### ToC
+
+* [Example](#example)
+* [Building](#building)
+* [License](#license)
+
+---
+
+## Example
 
 install wget:
 
@@ -23,7 +30,7 @@ install wget:
       verbose     => false,
     }
 ```
-or alternatively: 
+or alternatively:
 
 ```puppet
     wget::fetch { 'http://www.google.com/index.html':
