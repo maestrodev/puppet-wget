@@ -1,6 +1,6 @@
 {
   "name": "puppet-wget",
-  "version": "2.0.1",
+  "version": "2.0.2-rc0",
   "source": "https://github.com/voxpupuli/puppet-wget.git",
   "author": "Vox Pupuli",
   "license": "Apache-2.0",
