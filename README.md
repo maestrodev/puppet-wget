@@ -3,6 +3,11 @@
 [![Puppet Forge](https://img.shields.io/puppetforge/f/puppet/wget.svg)](https://forge.puppetlabs.com/puppet/wget)
 [![Puppet Forge](https://img.shields.io/puppetforge/e/puppet/wget.svg)](https://forge.puppetlabs.com/puppet/wget)
 
+This module is declared as deprecated by Vox Pupuli.
+
+The module [puppet-archive](https://github.com/voxpupuli/puppet-archive) is suggested as its replacement.
+
+
 A Puppet module to download files with wget, supporting authentication.
 It got migrated from [maestrodev](https://forge.puppet.com/maestrodev/wget) to [Vox Pupuli](https://voxpupuli.org/)
 
