@@ -7,13 +7,11 @@
   "summary": "Download files with wget",
   "description": "A module for wget that allows downloading of files, supporting authentication",
   "project_page": "https://github.com/voxpupuli/puppet-wget",
-  "dependencies": [
-
-  ],
+  "dependencies": [],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.10.0 < 7.0.0"
+      "version_requirement": ">= 5.5.8 < 7.0.0"
     }
   ],
   "operatingsystem_support": [
