@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'wget' do
   on_supported_os.each do |os, facts|
-    next if %w[windows SunOS].include? facts[:kernel]
+    next if %w[AIX windows SunOS].include? facts[:kernel]
 
     context "on #{os} " do
       let :facts do
