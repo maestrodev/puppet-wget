@@ -88,7 +88,7 @@ define wget::fetch (
   }
 
   # Windows exec unless testing requires different syntax
-  if ($::operatingsystem == 'windows') {
+  if ($facts['os']['name'] == 'windows') {
     $exec_path = $::path
     $unless_test = "cmd.exe /c \"dir ${_destination}\""
   } else {
@@ -119,7 +119,7 @@ define wget::fetch (
   }
 
   if $user != undef {
-    $wgetrc_content = $::operatingsystem ? {
+    $wgetrc_content = $facts['os']['name'] ? {
       # This is to work around an issue with macports wget and out of date CA cert bundle.  This requires
       # installing the curl-ca-bundle package like so:
       #
