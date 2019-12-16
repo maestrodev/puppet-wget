@@ -15,7 +15,7 @@ class wget (
         package { 'wget': ensure => $version }
       }
       elsif $::kernel == 'FreeBSD' {
-        if versioncmp($::operatingsystemmajrelease, '10') >= 0 {
+        if versioncmp($facts['os']['release']['major'], '10') >= 0 {
           package { 'wget': ensure => $version }
         }
         else {

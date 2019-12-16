@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe 'wget::authfetch' do
   on_supported_os.each do |os, facts|
+    next if %w[SunOS].include? facts[:kernel]
+
     context "on #{os} " do
       let :facts do
         facts
