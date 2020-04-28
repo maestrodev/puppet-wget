@@ -11,10 +11,10 @@ class wget (
 
   if $manage_package {
     if !defined(Package['wget']) {
-      if $::kernel == 'Linux' {
+      if $facts['kernel'] == 'Linux' {
         package { 'wget': ensure => $version }
       }
-      elsif $::kernel == 'FreeBSD' {
+      elsif $facts['kernel'] == 'FreeBSD' {
         if versioncmp($facts['os']['release']['major'], '10') >= 0 {
           package { 'wget': ensure => $version }
         }
