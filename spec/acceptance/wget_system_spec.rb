@@ -44,7 +44,7 @@ describe 'wget' do
     end
 
     it 'succeeds' do
-      shell("cat << EOF | su - vagrant -c 'puppet apply --verbose --detailed-exitcodes --modulepath=/etc/puppet/modules'\n#{manifest}", acceptable_exit_codes: [2]) do |r|
+      shell("cat << EOF | su - vagrant -c 'puppet apply --verbose --detailed-exitcodes --modulepath=/etc/puppetlabs/code/modules'\n#{manifest}", acceptable_exit_codes: [2]) do |r|
         expect(r.stdout).to match(%r{Wget::Fetch\[download Google index\].*returns: executed successfully})
       end
       shell('test -e /tmp/index-vagrant.html')
@@ -71,7 +71,7 @@ describe 'wget' do
     end
 
     it 'succeeds' do
-      shell("cat << EOF | su - vagrant -c 'puppet apply --verbose --detailed-exitcodes --modulepath=/etc/puppet/modules'\n#{manifest}", acceptable_exit_codes: [2]) do |r|
+      shell("cat << EOF | su - vagrant -c 'puppet apply --verbose --detailed-exitcodes --modulepath=/etc/puppetlabs/code/modules'\n#{manifest}", acceptable_exit_codes: [2]) do |r|
         expect(r.stdout).to match(%r{Wget::Fetch\[download RFC 2606\].*returns: executed successfully})
       end
       shell('test -e /tmp/rfc-2606.txt')
