@@ -1,7 +1,7 @@
 require 'spec_helper_acceptance'
 
 describe 'wget' do
-  let(:wget_manifest) { "class { 'wget': }" }
+  let(:wget_manifest) { "user { 'vagrant': ensure => present, managehome => true } -> class { 'wget': }" }
   let(:manifest) { wget_manifest }
 
   before do
