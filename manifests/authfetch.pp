@@ -18,7 +18,6 @@ define wget::authfetch (
   $execuser           = undef,
   $unless             = undef,
 ) {
-
   notice('wget::authfetch is deprecated, use wget::fetch with user/password params')
 
   wget::fetch { $title:
@@ -33,5 +32,4 @@ define wget::authfetch (
     password           => $password,
     unless             => $unless,
   }
-
 }

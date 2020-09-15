@@ -31,7 +31,6 @@ define wget::fetch (
   $mode               = undef,
   $unless             = undef,
 ) {
-
   include wget
 
   # The strict_variables setting aborts compilation referencing unset variables.
@@ -42,7 +41,7 @@ define wget::fetch (
   }
 
   # Does $destination end in a slash? If so, treat as a directory
-  case $destination   {
+  case $destination {
     # This is a nasty looking regex but it's simply checking to see if the $destination
     # ends in either forward slash "\" (Linux) or backwards slash "/" (Windows)
     /^.*\/$/, /^.*\$/:  {
@@ -68,15 +67,15 @@ define wget::fetch (
 
   $http_proxy_env = $http_proxy ? {
     undef   => [],
-    default => [ "HTTP_PROXY=${http_proxy}", "http_proxy=${http_proxy}" ],
+    default => ["HTTP_PROXY=${http_proxy}", "http_proxy=${http_proxy}"],
   }
   $https_proxy_env = $https_proxy ? {
     undef   => [],
-    default => [ "HTTPS_PROXY=${https_proxy}", "https_proxy=${https_proxy}" ],
+    default => ["HTTPS_PROXY=${https_proxy}", "https_proxy=${https_proxy}"],
   }
   $password_env = $user ? {
     undef   => [],
-    default => [ "WGETRC=${_destination}.wgetrc" ],
+    default => ["WGETRC=${_destination}.wgetrc"],
   }
 
   # not using stdlib.concat to avoid extra dependency
@@ -96,7 +95,7 @@ define wget::fetch (
     if $unless != undef {
       $unless_test = $unless
     }
-    elsif $redownload == true or $cache_dir != undef  {
+    elsif $redownload == true or $cache_dir != undef {
       $unless_test = 'test'
     } else {
       $unless_test = "test -s '${_destination}'"
@@ -162,7 +161,7 @@ define wget::fetch (
     default => undef,
   }
 
-  case $source_hash{
+  case $source_hash {
     '', undef: {
       $command = "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\""
     }
@@ -170,7 +169,6 @@ define wget::fetch (
       $command = "wget ${verbose_option}${nocheckcert_option}${no_cookies_option}${header_option}${user_option}${output_option}${flags_joined} \"${source}\" && echo '${source_hash}  ${_destination}' | md5sum -c --quiet"
     }
   }
-
 
   # ensure that wget is installed before the exec resource
   # but only if we manage wget....

@@ -8,7 +8,6 @@ class wget (
   $version = present,
   $manage_package = true,
 ) {
-
   if $manage_package {
     if !defined(Package['wget']) {
       if $::kernel == 'Linux' {
